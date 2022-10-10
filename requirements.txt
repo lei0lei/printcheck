@@ -1,0 +1,7 @@
+opencv-python==4.5.5.64
+PyMuPDF==1.19.6
+scikit-image==0.19.2
+fitz==0.0.1.dev2
+imutils==0.5.4
+PyMuPDF==1.19.6
+pynput==1.7.6

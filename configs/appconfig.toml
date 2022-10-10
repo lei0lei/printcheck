@@ -1,0 +1,22 @@
+# config for start app
+title = 'app configs'
+
+[config]
+app = ''
+
+[infile]
+pdfdir = ''
+pdfpath = ''
+tmppath = ''
+
+[result]
+correctpagesdir = ''
+tmppath = ''
+
+
+[external]
+exepath = ''
+
+[shortkey]
+stopexe = '<ctrl>+z'
+nextdoc = '<ctrl>+n'

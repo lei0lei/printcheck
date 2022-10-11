@@ -59,9 +59,12 @@ def run(pdfpath, savedir, cfg):
     checkdir(saveresultpath, 1)
     checkdir(savecfgpath, 1)
     
-    
-    pdf_to_img(pdfpath, outdir)
+    # pdf拆分
+    pdf_to_img(pdfpath, savepdfpath)
 
+    # 逐文件检测
+    
+    return True
 
 if __name__ == '__main__':
     templatepath = '/home/znzz/Desktop/Data/mfl/CODE/printcheck/tmp/2022-10-11'

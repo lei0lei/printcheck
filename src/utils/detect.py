@@ -5,9 +5,10 @@ import cv2
 from natsort import natsorted, ns
 from align import align_images
 from algos import detect_variance_ssim
-
+from utils import checkfile, checkdir
+from pdf2jpg import pdf_to_img
 def detect_difference(testim, templateim, cfg):
-    """_summary_
+    """detect difference for two images
 
     Args:
         testim (string): 待测图片路径
@@ -42,8 +43,24 @@ def detect_difference(testim, templateim, cfg):
 
 
 
-def run():
-    pass
+def run(pdfpath, savedir, cfg):
+    
+    assert checkfile(pdfpath), f'wrong input pdf path'
+    checkdir(savedir, 1)
+    assert checkdir(savedir, 0)
+    
+    savepdfpath = os.path.join(savedir,'pdf')
+    savetestpath = os.path.join(savedir,'test')
+    saveresultpath = os.path.join(savedir,'result')
+    savecfgpath = os.path.join(savedir,'cfg')
+    
+    checkdir(savepdfpath, 1)
+    checkdir(savetestpath, 1)
+    checkdir(saveresultpath, 1)
+    checkdir(savecfgpath, 1)
+    
+    
+    pdf_to_img(pdfpath, outdir)
 
 
 if __name__ == '__main__':

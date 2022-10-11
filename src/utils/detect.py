@@ -7,6 +7,8 @@ from align import align_images
 from algos import detect_variance_ssim
 from utils import checkfile, checkdir
 from pdf2jpg import pdf_to_img
+
+
 def detect_difference(testim, templateim, cfg):
     """detect difference for two images
 
@@ -43,8 +45,17 @@ def detect_difference(testim, templateim, cfg):
 
 
 
-def run(pdfpath, savedir, cfg):
-    
+def runs(pdfpath, savedir, cfg):
+    """run program
+
+    Args:
+        pdfpath (string): pdf ifle path
+        savedir (string): result save path
+        cfg (_type_): cfg dict
+
+    Returns:
+        _type_: _description_
+    """    
     assert checkfile(pdfpath), f'wrong input pdf path'
     checkdir(savedir, 1)
     assert checkdir(savedir, 0)
@@ -54,6 +65,7 @@ def run(pdfpath, savedir, cfg):
     saveresultpath = os.path.join(savedir,'result')
     savecfgpath = os.path.join(savedir,'cfg')
     
+    # 创建结果保存路径
     checkdir(savepdfpath, 1)
     checkdir(savetestpath, 1)
     checkdir(saveresultpath, 1)
@@ -62,14 +74,18 @@ def run(pdfpath, savedir, cfg):
     # pdf拆分
     pdf_to_img(pdfpath, savepdfpath)
 
+    tasks = os.listdir(savepdfpath)
     # 逐文件检测
+    
+    
     
     return True
 
 if __name__ == '__main__':
-    templatepath = '/home/znzz/Desktop/Data/mfl/CODE/printcheck/tmp/2022-10-11'
+    templatepath = '/home/znzz/Desktop/Data/mfl/CODE/printcheck/tmp'
     testimgpath = '/home/znzz/Desktop/Data/mfl/CODE/printcheck/tmptest'
-    
+    pdfpath = '/home/znzz/Desktop/Data/mfl/CODE/printcheck/test.pdf'
+    pdf_to_img(pdfpath, templatepath)
     ims = os.listdir(testimgpath)
     ims = natsorted(ims)
     im = cv2.imread(os.path.join(testimgpath, ims[3]))

@@ -33,13 +33,13 @@ def pdf_to_img(pdf_path, orig_dir, start=-1, end=-1):
     assert len(pages)<1, f'target dir is non empty'
      
     # make tmp save dir
-    assert checkdir(os.path.join(orig_dir,str(datetime.date.today())),1)
+    assert checkdir(orig_dir,1)
     for i in range(pdflen):
         page = doc[i]
         pix = page.get_pixmap(matrix=magnify)
         
         # 图片明明采用自然排序
-        pix.save(os.path.join(orig_dir,str(datetime.date.today()),f'IMG_{str(i).zfill(4)}.jpg'))
+        pix.save(os.path.join(orig_dir,f'IMG_{str(i).zfill(4)}.jpg'))
     
     imgpath = orig_dir
     return imgpath      

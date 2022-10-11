@@ -22,22 +22,7 @@ def _loadtoml(tomlfile):
     args = toml.load(tomlfile)
     return args
 
-def _checkdir(dir, mode):
-    '''
-    check if dir exist
-    '''
-    if mode == 0:
-        # if exist return True
-        pass
-    elif mode == 1:
-        # if exist, remove and mkdir,return True
-        pass
-    elif mode == 2:
-        # if not exist, return False
-        pass
-    elif mode == 3:
-        # if not exist, mkdir and return True
-        pass
+
 
 if __name__ == '__main__':
     

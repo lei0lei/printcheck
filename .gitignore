@@ -6,4 +6,11 @@ result*
 *.JPG
 *.JPEG
 *.jpeg
+*.pdf
 venv*
+*.pt
+*.pth
+*.pkl
+**/__pycache__
+tmpdir*
+wandb

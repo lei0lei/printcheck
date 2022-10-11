@@ -18,7 +18,6 @@ def detect_variance_ssim(imgGray, templateGray, ssim_cfg):
                                           templateGray, 
                                           full=True)
     diff = (diff * 255).astype("uint8")
-
     thresh0 = cv2.threshold(diff, 
                             ssim_cfg["thresh"], 
                             255, 
@@ -31,6 +30,5 @@ def detect_variance_ssim(imgGray, templateGray, ssim_cfg):
                          kernel, 
                          iterations=ssim_cfg["dilate_ite"])
     thresh = cv2.bitwise_not(thresh1)
-
     return thresh
 

@@ -1,10 +1,25 @@
+from audioop import minmax
+from gettext import npgettext
 import os
 from pathlib import Path
 import shutil
-
+import numpy as np
 
 def file_monitor(path):
     pass
+
+def contours2rect(contours):
+    
+    rects = []
+    select = []
+    for i in contours:
+        minx = np.amin(i, axis=0)[0][0]
+        miny = np.amin(i, axis=0)[0][1]
+        maxx = np.amax(i, axis=0)[0][0]
+        maxy = np.amax(i, axis=0)[0][1]
+        rects.append([minx,miny,maxx,maxy])
+    
+    return rects
 
 
 def checkfile(file):

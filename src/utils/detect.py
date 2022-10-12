@@ -5,11 +5,10 @@ import cv2
 from natsort import natsorted, ns
 from align import align_images
 from algos import detect_variance_ssim
-from utils import checkfile, checkdir
+from utils import checkfile, checkdir, contours2rect
 from pdf2jpg import pdf_to_img
 import time 
 from watchdog.observers import Observer
-# from utils import FileHandler
 from watchdog.events import FileSystemEventHandler
 from pathlib import Path   
 import json
@@ -38,17 +37,17 @@ def detect_difference(testim, templateim, cfg):
     
     ssim_cfg = {
         "thresh": 40,
-        "kernel": [3, 3],
+        "kernel": [5, 5],
         "dilate_ite": 5,
     }
     
     difference = detect_variance_ssim(alignedGray, templateGray, ssim_cfg)
-    cv2.imwrite('roi.jpg', difference)
-    contours, hierarchy = cv2.findContours(difference, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # cv2.imwrite('roi.jpg', difference)
+    contours, hierarchy = cv2.findContours(difference, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(aligned, contours, -1, (0, 0, 255), 3)
     cv2.imwrite('11.jpg', aligned)
-    print(len(contours))
-    print(list(contours))
+    # print(len(contours))
+    # print(list(contours))
     return contours
 
 class FileHandler(FileSystemEventHandler):
@@ -60,7 +59,16 @@ class FileHandler(FileSystemEventHandler):
         self.cfg = cfg
         self.saveresultpath = saveresultpath
         
-    def on_created(self, event): # when file is created
+    def on_created(self, event): 
+        """do something while a file is created
+
+        Args:
+            event (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """        
+        # when file is created
         # do something, eg. call your function to process the image
         print (f'Got event for file {event.src_path}')
         task = Path(event.src_path).name
@@ -73,15 +81,12 @@ class FileHandler(FileSystemEventHandler):
                           os.path.join(self.templatedir, Path(event.src_path).name), self.cfg)
         print(f'----------')
         result['printok'] = len(contours)==0
-        # result['locations'] = contours.tolist()
-        print(result)
+        print(f'tested {task}')
+        rects = contours2rect(contours)
+        result['locations'] = [list( map(int,i) ) for i in rects]
         with open(os.path.join(self.saveresultpath,taskname+'.json'), 'w') as fp:
             json.dump(result, fp)
         return True
-
-
-
-
 
 def runs(pdfpath, savedir, cfg):
     """run program

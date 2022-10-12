@@ -12,7 +12,9 @@ from watchdog.observers import Observer
 # from utils import FileHandler
 from watchdog.events import FileSystemEventHandler
 from pathlib import Path   
-    
+import json
+
+
 def detect_difference(testim, templateim, cfg):
     """detect difference for two images
 
@@ -37,7 +39,7 @@ def detect_difference(testim, templateim, cfg):
     ssim_cfg = {
         "thresh": 40,
         "kernel": [3, 3],
-        "dilate_ite": 7,
+        "dilate_ite": 5,
     }
     
     difference = detect_variance_ssim(alignedGray, templateGray, ssim_cfg)
@@ -45,7 +47,9 @@ def detect_difference(testim, templateim, cfg):
     contours, hierarchy = cv2.findContours(difference, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(aligned, contours, -1, (0, 0, 255), 3)
     cv2.imwrite('11.jpg', aligned)
-    return contours, hierarchy
+    print(len(contours))
+    print(list(contours))
+    return contours
 
 class FileHandler(FileSystemEventHandler):
     def __init__(self, savepdfpath, savetestpath, saveresultpath, cfg):
@@ -54,14 +58,25 @@ class FileHandler(FileSystemEventHandler):
         
         self.templatedir = savepdfpath
         self.cfg = cfg
-        self.result = saveresultpath
+        self.saveresultpath = saveresultpath
         
     def on_created(self, event): # when file is created
         # do something, eg. call your function to process the image
         print (f'Got event for file {event.src_path}')
-        detect_difference(os.path.join(self.testim, event.src_path), 
+        task = Path(event.src_path).name
+        taskname = task.split('.')[0]
+        result = {}
+        result['testimg'] = os.path.join(self.testim, event.src_path)
+        result['templateimg'] = os.path.join(self.templatedir, Path(event.src_path).name)
+        result['pagenum'] = taskname.split('_')[-1]
+        contours = detect_difference(os.path.join(self.testim, event.src_path), 
                           os.path.join(self.templatedir, Path(event.src_path).name), self.cfg)
         print(f'----------')
+        result['printok'] = len(contours)==0
+        # result['locations'] = contours.tolist()
+        print(result)
+        with open(os.path.join(self.saveresultpath,taskname+'.json'), 'w') as fp:
+            json.dump(result, fp)
         return True
 
 
@@ -101,12 +116,19 @@ def runs(pdfpath, savedir, cfg):
     
     if len(tasks)>0:
         for k, task in enumerate(tasks):
+            taskname = task.split('.')[0]
+            result = {}
             testim = os.path.join(savetestpath, task)
             templateim = os.path.join(savepdfpath, task)
+            result['testimg'] = testim
+            result['templateimg'] = templateim
+            result['pagenum'] = taskname.split('_')[-1]
+            contours = detect_difference(testim, templateim, {})
+            result['printok'] = len(contours)==0
+            result['locations'] = contours.tolist()
+            with open(os.path.join(saveresultpath,taskname+'.json', 'w')) as fp:
+                json.dump(result, fp)
             
-            detect_difference(testim, templateim, {})
-        
-    
     # 逐文件检测
     observer = Observer()
     cfg = {}
@@ -117,7 +139,7 @@ def runs(pdfpath, savedir, cfg):
     
     try:
         while True:
-            time.sleep(1)
+            time.sleep(0.5)
     except KeyboardInterrupt:
         observer.stop()
 

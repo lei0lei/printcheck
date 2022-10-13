@@ -1,6 +1,6 @@
 import fitz
 import os
-from utils import checkfile, checkdir
+from .utils import checkfile, checkdir
 import datetime
 
 def pdf_to_img(pdf_path, orig_dir, start=-1, end=-1):

@@ -3,10 +3,10 @@
 import os
 import cv2
 from natsort import natsorted, ns
-from align import align_images
-from algos import detect_variance_ssim
-from utils import checkfile, checkdir, contours2rect
-from pdf2jpg import pdf_to_img
+from .align import align_images
+from .algos import detect_variance_ssim
+from .utils import checkfile, checkdir, contours2rect
+from .pdf2jpg import pdf_to_img
 import time 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
